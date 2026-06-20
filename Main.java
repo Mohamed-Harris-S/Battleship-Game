@@ -21,7 +21,6 @@ public class Main {
             System.out.println();
         }
     }
-    
     public static boolean adjacentCheckSameChar(int startModify,int endModify,char[][] board,int row1){
         for(int i=startModify;i<=endModify;i++) {
             int rowm=0;
@@ -88,7 +87,6 @@ public class Main {
         return true;
     }
     public static char[][] gameLogic(char[][] board,String name,int cells){
-    try{
         while (true) {
             System.out.println();
             String cord = scan.nextLine();
@@ -108,6 +106,7 @@ public class Main {
             int l1 = Integer.parseInt(n1);
             String n2 = end.substring(1);
             int l2 = Integer.parseInt(n2);
+
             if (c1 == c2) {
                 if (l1 > 0 && l2 < 11) {
 
@@ -216,18 +215,10 @@ public class Main {
 //                            System.out.print(k1 + "" + l1 + " ");
 //                            k1--;
 //                        }
-                        int row1 = 0;
-                        int row2 = 0;
                         int line1 = l1 - 1;
 
-                        for (char i = 'A'; i < c1; i++) {
-                            row1++;
-                        }
-
-                        for (char i = 'A'; i < c2; i++) {
-                            row2++;
-                        }
-
+                        int row1 = c1 - 'A';
+                        int row2 = c2 - 'A';
                         boolean isAdjacent = adjacentCheckSameLength(row2, row1, board, line1);
 
                         if (!isAdjacent) {
@@ -246,13 +237,9 @@ public class Main {
                     continue;
                 }
             } else {
-                System.out.println("Error!");
+                System.out.println("Error! Wrong ship location! Try again:");
                 continue;
             }
-        }
-        }catch (Exception e){
-            System.out.println("Error! Wrong input! Try again:");
-            return gameLogic(board,name,cells);
         }
     }
 
@@ -276,6 +263,37 @@ public class Main {
         return board;
     }
 
+    public static void gameShoot(char[][] board){
+        while(true){
+        try{
+            String shootRange = scan.nextLine();
+
+            char c1 = (char)shootRange.charAt(0);
+            String n1 = shootRange.substring(1);
+            int l1 = Integer.parseInt(n1);
+            l1 = l1-1;
+            int row = c1 - 'A';
+
+            if(board[row][l1] == 'X' || board[row][l1] == 'M'){
+               System.out.println("You already shot here!");
+               continue; 
+            }
+            if(board[row][l1]=='O'){
+                board[row][l1]='X';
+                displayGame(board);
+                System.out.println("You hit a ship!");
+                return;
+            }else{
+                board[row][l1]='M';
+                displayGame(board);
+                System.out.println("You missed!");
+                return;
+            }
+        }catch(Exception e){
+            System.out.println("Error! You entered the wrong coordinates! Try again:");
+        }
+    }
+    }
     public static void main(String[] args) {
         char[][] board = new char[10][10];
 
@@ -284,5 +302,10 @@ public class Main {
         }
         displayGame(board);
         shipPlacement(board);
+        System.out.println("The game starts!");
+        displayGame(board);
+        System.out.println();
+        System.out.println("Take a shot!");
+        gameShoot(board);
     }
 }

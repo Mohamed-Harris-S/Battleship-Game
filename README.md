@@ -24,6 +24,7 @@ A console-based implementation of the classic Battleship game developed in Java.
 ## Project Status
 
 * Ship Placement Completed
+* Shooting mechanism Completed
 
 
 ## How to Run
