@@ -1,5 +1,5 @@
-import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class Main {
     static Scanner scan = new Scanner(System.in);
@@ -264,86 +264,105 @@ public class Main {
         return board;
     }
     public static boolean shipStillExists(char[][] board, int row, int col) {
-        // check up
-        for(int i=row-1; i>=0; i--) {
-            if(board[i][col] == '~' || board[i][col] == 'M') break;
-            if(board[i][col] == 'O') return true;
+
+        // up
+        for (int i = row - 1; i >= 0; i--) {
+            if (board[i][col] == '~') {
+                break;
+            }
+            if (board[i][col] == 'O') {
+                return true;
+            }
         }
 
-        // check down
-        for(int i=row+1; i<10; i++) {
-            if(board[i][col] == '~' || board[i][col] == 'M') break;
-            if(board[i][col] == 'O') return true;
+        // down
+        for (int i = row + 1; i < 10; i++) {
+            if (board[i][col] == '~') {
+                break;
+            }
+            if (board[i][col] == 'O') {
+                return true;
+            }
         }
 
-        // check left
-        for(int j=col-1; j>=0; j--) {
-            if(board[row][j] == '~' || board[row][j] == 'M') break;
-            if(board[row][j] == 'O') return true;
+        // left
+        for (int j = col - 1; j >= 0; j--) {
+            if (board[row][j] == '~') {
+                break;
+            }
+            if (board[row][j] == 'O') {
+                return true;
+            }
         }
 
-        // check right
-        for(int j=col+1; j<10; j++) {
-            if(board[row][j] == '~' || board[row][j] == 'M') break;
-            if(board[row][j] == 'O') return true;
+        // right
+        for (int j = col + 1; j < 10; j++) {
+            if (board[row][j] == '~') {
+                break;
+            }
+            if (board[row][j] == 'O') {
+                return true;
+            }
         }
 
         return false;
     }
-    public static char[][] gameShoot(char[][] board,char[][] fogBoard){
-     int keepShoot = 1;
-        while(keepShoot<=100) {
+    public static boolean gameShoot(char[][] board,char[][] fogBoard){
+        while(true) {
             try {
                 String shootRange = scan.nextLine();
 
-                char c1 = (char) shootRange.charAt(0);
+                char c1 = Character.toUpperCase(shootRange.charAt(0));
                 String n1 = shootRange.substring(1);
                 int l1 = Integer.parseInt(n1);
                 l1 = l1 - 1;
                 int row = c1 - 'A';
+
+                if(row < 0 || row >= 10 || l1 < 0 || l1 >= 10){
+                    System.out.println("Error! You entered the wrong coordinates! Try again:");
+                    continue;
+                }
                 if (board[row][l1] == 'O') {
                     board[row][l1] = 'X';
                     fogBoard[row][l1] = 'X';
                     displayGame(fogBoard);
-                    if(shipStillExists(board,row,l1)) {
+                    if (shipStillExists(board, row, l1)) {
                         System.out.println("You hit a ship!");
+                        return true;
                     } else {
 
                         boolean isThereShip = false;
 
-                        for(int i=0;i<10;i++){
-                            for(int j=0;j<10;j++){
-                                if(board[i][j]=='O'){
+                        for (int i = 0; i < 10; i++) {
+                            for (int j = 0; j < 10; j++) {
+                                if (board[i][j] == 'O') {
                                     isThereShip = true;
                                     break;
                                 }
                             }
                         }
 
-                        if(isThereShip){
-                            System.out.println("You sank a ship! Specify a new target:");
+                        if (isThereShip) {
+                            System.out.println("You sank a ship!");
+                            return true;
                         } else {
                             System.out.println("You sank the last ship. You won. Congratulations!");
-                            break;
+                            return false;
                         }
                     }
-                }else if(board[row][l1] == 'M' || board[row][l1] == 'X'){
-                    displayGame(fogBoard);
-                    System.out.println("You already hit that spot");
-                }
-                else {
+                }else if (board[row][l1] == 'M' || board[row][l1] == 'X') {
+                    return true;
+                } else {
                     fogBoard[row][l1] = 'M';
                     displayGame(fogBoard);
                     System.out.println("You missed!");
-                    board[row][l1] = 'M';
+                    return true;
                 }
-                keepShoot++;
             } catch (Exception e) {
                 System.out.println("Error! You entered the wrong coordinates! Try again:");
                 continue;
             }
         }
-        return board;
     }
 
     public static char[][] fogDisplay(){
@@ -355,18 +374,59 @@ public class Main {
         return fogBoard;
     }
 
-    public static void main(String[] args) {
-        char[][] board = new char[10][10];
-        for(int i=0;i<10;i++){
-            Arrays.fill(board[i], '~');
-        }
+    public static char[][] playerShipPlacement(char[][] board,int num){
+        System.out.printf("Player %d, place your ships on the game field%n", num);
         displayGame(board);
         shipPlacement(board);
-        char[][] fogBoard = fogDisplay();
-        System.out.println("The game starts!");
-        displayGame(fogBoard);
-        System.out.println();
-        System.out.println("Take a shot!");
-        gameShoot(board,fogBoard);
+        System.out.println("Press Enter and pass the move to another player");
+        scan.nextLine();
+        return board;
+    }
+
+    public static boolean playerGamePlay(char[][] ownBoard,char[][] ownFogBoard,int player,char[][] enemyBoard,char[][] enemyFogBoard){
+        displayGame(enemyFogBoard);
+        System.out.println("---------------------");
+        displayGame(ownBoard);
+        System.out.printf("Player %d, it's your turn:%n", player);
+        boolean flag = gameShoot(enemyBoard, enemyFogBoard);
+        if(flag){
+            System.out.println("Press Enter and pass the move to another player");
+            scan.nextLine();
+        }
+        return flag;
+    }
+
+
+    public static void main(String[] args) {
+        int player1 = 1;
+        int player2 = 2;
+
+        char[][] boardP1 = new char[10][10];
+        char[][] boardP2 = new char[10][10];
+
+        for(int i=0;i<10;i++){
+            Arrays.fill(boardP1[i], '~');
+        }
+
+        for(int i=0;i<10;i++){
+            Arrays.fill(boardP2[i], '~');
+        }
+        playerShipPlacement(boardP1,player1);
+        playerShipPlacement(boardP2,player2);
+
+        char[][] fogBoardP1 = fogDisplay();
+        char[][] fogBoardP2 = fogDisplay();
+
+        boolean flag;
+        while(true){
+            flag = playerGamePlay(boardP1,fogBoardP1,player1,boardP2,fogBoardP2);
+            if(!flag){
+                break;
+            }
+            flag = playerGamePlay(boardP2,fogBoardP2,player2,boardP1,fogBoardP1);
+            if(!flag){
+                break;
+            }
+        }
     }
 }

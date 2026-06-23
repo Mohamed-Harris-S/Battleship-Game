@@ -12,6 +12,16 @@ A console-based implementation of the classic Battleship game developed in Java.
 * Adjacent ship detection (including diagonals)
 * Input validation and error handling
 * Console-based user interaction
+* Two-player Battleship gameplay
+* Ship placement validation
+* Adjacency checking
+* Fog of War
+* Hit and miss detection
+* Ship sinking detection
+* Win condition
+* Turn-based gameplay
+* Coordinate validation
+
 
 ## Technologies Used
 
@@ -20,13 +30,6 @@ A console-based implementation of the classic Battleship game developed in Java.
 * Loops
 * Methods
 * Object-Oriented Programming concepts
-
-## Project Status
-
-* Ship Placement Completed
-* Shooting Mechanism Completed
-* Gameplay with Fog of War
-* Ship Sinking Detection
 
 ## How to Run
 
